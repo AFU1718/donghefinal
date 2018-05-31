@@ -30,5 +30,4 @@ public class TeaPriceDAO extends BaseDAO<TeaPrice> {
         }
         return teaPriceMonthList;
     }
-
 }
