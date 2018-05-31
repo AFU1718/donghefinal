@@ -74,6 +74,7 @@ public class TeaServiceImpl implements TeaService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (Integer i:goodsIdList) {
             getGoodsPriceByGoodsId(i,"2005-01-01",sdf.format(now));
+
         }
     }
 
@@ -156,6 +157,7 @@ public class TeaServiceImpl implements TeaService {
                 }
 
             }
+            teaDAO.mark(goodsId);
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (IOException e) {

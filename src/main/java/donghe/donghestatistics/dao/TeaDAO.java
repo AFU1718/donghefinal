@@ -72,4 +72,12 @@ public class TeaDAO extends BaseDAO<Tea> {
             return  query.list();
         }
     }
+
+    public void mark(Integer goodsId) {
+        String hql = "update Tea t set t.status = 2  where t.goodsId= ?";
+        org.hibernate.Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setInteger(0, goodsId);
+
+        query.executeUpdate();
+    }
 }
