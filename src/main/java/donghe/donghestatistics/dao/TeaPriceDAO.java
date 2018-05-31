@@ -23,9 +23,10 @@ public class TeaPriceDAO extends BaseDAO<TeaPrice> {
         List<TeaPriceMonth> teaPriceMonthList =new ArrayList<>();
         for (Object o:list) {
             TeaPriceMonth teaPriceMonth=new TeaPriceMonth();
+            teaPriceMonth.setName(((Object[])(o))[0].toString());
             teaPriceMonth.setGoodsId((Integer)((Object[])(o))[1]);
-            teaPriceMonth.setYearMonth(String.valueOf(((Object[])(o))[0]));
-            teaPriceMonth.setAvgPrice(Double.parseDouble(((Object[])(o))[0].toString()));
+            teaPriceMonth.setYearMonth(String.valueOf(((Object[])(o))[2]));
+            teaPriceMonth.setAvgPrice(Double.parseDouble(((Object[])(o))[3].toString()));
             teaPriceMonthList.add(teaPriceMonth);
         }
         return teaPriceMonthList;

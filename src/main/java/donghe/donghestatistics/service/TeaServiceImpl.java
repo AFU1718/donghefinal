@@ -51,11 +51,11 @@ public class TeaServiceImpl implements TeaService {
     @Autowired
     private TeaPriceMonthDAO teaPriceMonthDAO;
     public void getTeaPriceMonth(){
-//        List<Integer> goodsIdList=getGoodsIdList();
-//        for (Integer i:goodsIdList) {
-                getTeaPriceMonthByGoodsId(1703);
+        List<Integer> goodsIdList=getGoodsIdList();
+        for (Integer i:goodsIdList) {
+                getTeaPriceMonthByGoodsId(i);
 
-//        }
+        }
     }
 
     public void getTeaPriceMonthByGoodsId(Integer goodsId){
