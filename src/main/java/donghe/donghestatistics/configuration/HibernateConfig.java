@@ -1,9 +1,7 @@
 package donghe.donghestatistics.configuration;
 
 
-import donghe.donghestatistics.domain.Tea;
-import donghe.donghestatistics.domain.TeaPrice;
-import donghe.donghestatistics.domain.TeaPriceMonth;
+import donghe.donghestatistics.domain.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +24,8 @@ public class HibernateConfig {
             Tea.class,
             TeaPrice.class,
             TeaPriceMonth.class,
+            TeaInterested.class,
+            ParamByMonth.class,
     };
 
     @Autowired

@@ -4,9 +4,11 @@ package donghe.donghestatistics.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import donghe.donghestatistics.dao.TeaDAO;
+import donghe.donghestatistics.dao.TeaInterestedDAO;
 import donghe.donghestatistics.dao.TeaPriceDAO;
 import donghe.donghestatistics.dao.TeaPriceMonthDAO;
 import donghe.donghestatistics.domain.Tea;
+import donghe.donghestatistics.domain.TeaInterested;
 import donghe.donghestatistics.domain.TeaPrice;
 import donghe.donghestatistics.domain.TeaPriceMonth;
 import org.apache.http.Consts;
@@ -50,37 +52,41 @@ public class TeaServiceImpl implements TeaService {
 
     @Autowired
     private TeaPriceMonthDAO teaPriceMonthDAO;
-    public void getTeaPriceMonth(){
-        List<Integer> goodsIdList=getGoodsIdList();
-        for (Integer i:goodsIdList) {
-                getTeaPriceMonthByGoodsId(i);
+    @Autowired
+    private TeaInterestedDAO teaInterestedDAO;
+
+    public void getTeaPriceMonth() {
+        List<Integer> goodsIdList = getGoodsIdList();
+        for (Integer i : goodsIdList) {
+            getTeaPriceMonthByGoodsId(i);
 
         }
     }
 
-    public void getTeaPriceMonthByGoodsId(Integer goodsId){
-        List<TeaPriceMonth> teaPriceMonthList=teaPriceDAO.getTeaPriceMonthByGoodsId(goodsId);
-        for (TeaPriceMonth teaPriceMonth:teaPriceMonthList) {
+    public void getTeaPriceMonthByGoodsId(Integer goodsId) {
+        List<TeaPriceMonth> teaPriceMonthList = teaPriceDAO.getTeaPriceMonthByGoodsId(goodsId);
+        for (TeaPriceMonth teaPriceMonth : teaPriceMonthList) {
             teaPriceMonthDAO.create(teaPriceMonth);
         }
     }
 
-    public List<Integer> getGoodsIdList(){
-        return  teaDAO.getGoodsIdList();
+    public List<Integer> getGoodsIdList() {
+        return teaDAO.getGoodsIdList();
     }
-    public void getGoodsPrice()throws  Exception{
-        List<Integer> goodsIdList=getGoodsIdList();
+
+    public void getGoodsPrice() throws Exception {
+        List<Integer> goodsIdList = getGoodsIdList();
         Timestamp now = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        for (Integer i:goodsIdList) {
-            getGoodsPriceByGoodsId(i,"2005-01-01",sdf.format(now));
+        for (Integer i : goodsIdList) {
+            getGoodsPriceByGoodsId(i, "2005-01-01", sdf.format(now));
 
         }
     }
 
-    public void getGoodsPriceByGoodsId(int goodsId,String beginDay,String endDay) throws Exception{
+    public void getGoodsPriceByGoodsId(int goodsId, String beginDay, String endDay) throws Exception {
 
-        String url = "http://www.donghetea.com/goods.php"+"?id="+Integer.toString(goodsId);
+        String url = "http://www.donghetea.com/goods.php" + "?id=" + Integer.toString(goodsId);
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
@@ -90,13 +96,13 @@ public class TeaServiceImpl implements TeaService {
 
         List<NameValuePair> params = new ArrayList();
 
-        params.add(new BasicNameValuePair("begin_day",beginDay));
+        params.add(new BasicNameValuePair("begin_day", beginDay));
         params.add(new BasicNameValuePair("end_day", endDay));
         params.add(new BasicNameValuePair("size", "10"));
         params.add(new BasicNameValuePair("sort_time", "0"));
 
 
-        httpPost.setEntity(new UrlEncodedFormEntity(params,  Consts.UTF_8));
+        httpPost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
 
         String str = "";
 
@@ -124,30 +130,30 @@ public class TeaServiceImpl implements TeaService {
                 Elements scripts = document.getElementsByTag("script");
                 for (Element element : scripts) {
                     if (element.toString().contains("hqData")) {
-                        String s=element.toString().replace(" ", "");
+                        String s = element.toString().replace(" ", "");
                         String[] s1 = s.split("hqData=");
                         String[] s2 = s1[1].split(";");
-                        String priceList=s2[0];
+                        String priceList = s2[0];
                         System.out.println(priceList);
                         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
                         JSONArray jsonArray = JSON.parseArray(priceList);
                         for (Object obj : jsonArray) {
-                            TeaPrice teaPrice=new TeaPrice();
+                            TeaPrice teaPrice = new TeaPrice();
                             teaPrice.setGoodsId(goodsId);
                             teaPrice.setName(teaDAO.getNameByGoodsId(goodsId));
-                            String date =(String)(JSON.parseArray(obj.toString()).get(0));
+                            String date = (String) (JSON.parseArray(obj.toString()).get(0));
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                             Date dateUtil = sdf.parse(date);
-                            java.sql.Date dateSql=new java.sql.Date(dateUtil.getTime());
+                            java.sql.Date dateSql = new java.sql.Date(dateUtil.getTime());
                             teaPrice.setDate(dateSql);
                             final Object o = JSON.parseArray(obj.toString()).get(1);
-                            if (o instanceof Integer){
-                                teaPrice.setPrice((double)((Integer)o).intValue());
-                            }else if (o instanceof BigDecimal){
-                                teaPrice.setPrice(((BigDecimal)o).doubleValue());
-                            }else if (o instanceof Double){
-                                teaPrice.setPrice((Double)o);
+                            if (o instanceof Integer) {
+                                teaPrice.setPrice((double) ((Integer) o).intValue());
+                            } else if (o instanceof BigDecimal) {
+                                teaPrice.setPrice(((BigDecimal) o).doubleValue());
+                            } else if (o instanceof Double) {
+                                teaPrice.setPrice((Double) o);
                             }
 
                             teaPriceDAO.create(teaPrice);
@@ -193,8 +199,8 @@ public class TeaServiceImpl implements TeaService {
 
     public void getGoodsId() throws IOException {
 
-        int page=getGoodsIdByPage(1);
-        for (int i=1;i<=page;i++){
+        int page = getGoodsIdByPage(1);
+        for (int i = 1; i <= page; i++) {
             getGoodsIdByPage(i);
         }
     }
@@ -251,10 +257,10 @@ public class TeaServiceImpl implements TeaService {
                             String[] array = linkHref.split("id=");
                             int linkId = Integer.parseInt(array[1]);
                             String linkText = link.text();
-                            Tea tea =new Tea();
+                            Tea tea = new Tea();
                             tea.setName(linkText);
                             tea.setGoodsId(linkId);
-                            teaDAO.createOrUpdate(tea.getName(),tea.getGoodsId());
+                            teaDAO.createOrUpdate(tea.getName(), tea.getGoodsId());
                             System.out.println(linkHref + "  " + linkId + "  " + linkText);
                         }
                     }
@@ -317,5 +323,20 @@ public class TeaServiceImpl implements TeaService {
         return pageCount;
     }
 
+    public TeaInterested postTeaInterested(Integer goodsId, Double reputation, Double year, Double brand,
+                                           Double area, Double scarcity, Double seasoning, Double flavor){
+        TeaInterested teaInterested=new TeaInterested();
+        teaInterested.setName(teaDAO.getNameByGoodsId(goodsId));
+        teaInterested.setGoodsId(goodsId);
+        teaInterested.setReputation(reputation);
+        teaInterested.setYear(year);
+        teaInterested.setBrand(brand);
+        teaInterested.setArea(area);
+        teaInterested.setScarcity(scarcity);
+        teaInterested.setSeasoning(seasoning);
+        teaInterested.setFlavor(flavor);
+        teaInterestedDAO.create(teaInterested);
+        return teaInterested;
+    }
 
 }

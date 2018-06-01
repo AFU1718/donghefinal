@@ -1,5 +1,6 @@
 package donghe.donghestatistics.service;
 
+import donghe.donghestatistics.domain.TeaInterested;
 import donghe.donghestatistics.domain.TeaPriceMonth;
 
 import java.io.IOException;
@@ -12,4 +13,6 @@ public interface TeaService {
     void getGoodsPrice() throws Exception;
    void getTeaPriceMonthByGoodsId(Integer goodsId);
     void getTeaPriceMonth();
+    TeaInterested postTeaInterested(Integer goodsId, Double reputation, Double year, Double brand,
+                                    Double area, Double scarcity, Double seasoning, Double flavor);
 }

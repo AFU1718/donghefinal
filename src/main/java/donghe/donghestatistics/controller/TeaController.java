@@ -1,5 +1,6 @@
 package donghe.donghestatistics.controller;
 
+import donghe.donghestatistics.domain.TeaInterested;
 import donghe.donghestatistics.service.TeaService;
 import donghe.donghestatistics.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,11 @@ public class TeaController {
     public Result getTeaPriceMonth()throws Exception {
         teaService.getTeaPriceMonth();
         return Result.success();
+    }
+    @RequestMapping(value = "/teaInterested", method = RequestMethod.POST)
+    public Result postTeaInterested(Integer goodsId, Double reputation, Double year, Double brand,
+                                    Double area, Double scarcity, Double seasoning, Double flavor){
+        return Result.success(teaService.postTeaInterested(goodsId,reputation,year,brand,area,scarcity,seasoning,flavor));
     }
 
 }
