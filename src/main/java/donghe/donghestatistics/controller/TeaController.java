@@ -6,6 +6,7 @@ import donghe.donghestatistics.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -44,8 +45,8 @@ public class TeaController {
         return Result.success();
     }
     @RequestMapping(value = "/teaInterested", method = RequestMethod.POST)
-    public Result postTeaInterested(Integer goodsId, Double reputation, Double year, Double brand,
-                                    Double area, Double scarcity, Double seasoning, Double flavor){
+    public Result postTeaInterested(@RequestParam Integer goodsId, @RequestParam Double reputation, @RequestParam Double year, @RequestParam Double brand,
+                                    @RequestParam Double area, @RequestParam Double scarcity, @RequestParam Double seasoning, @RequestParam Double flavor){
         return Result.success(teaService.postTeaInterested(goodsId,reputation,year,brand,area,scarcity,seasoning,flavor));
     }
 
