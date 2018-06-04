@@ -14,15 +14,33 @@ public class TeaInterestedDAO extends BaseDAO<TeaInterested> {
     }
 
 
-    public List<Integer> getGoodsIdInterested(){
-        String hql="SELECT distinct t.goodsId from TeaInterested t";
+    public List<Integer> getGoodsIdInterested() {
+        String hql = "SELECT distinct t.goodsId from TeaInterested t";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         if (query.list() == null || query.list().size() == 0) {
             return null;
         } else {
-            return  query.list();
+            return query.list();
         }
     }
 
-
+    public List<TeaInterested> getTeaInterestedList() {
+        String hql = "from TeaInterested t";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        if (query.list() == null || query.list().size() == 0) {
+            return null;
+        } else {
+            return query.list();
+        }
+    }
+    public TeaInterested getByGoodsId(Integer goodsId){
+        String hql = "from TeaInterested t where t.goodsId=?";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setInteger(0,goodsId);
+        if (query.list() == null || query.list().size() == 0) {
+            return null;
+        } else {
+            return (TeaInterested)query.list().get(0);
+        }
+    }
 }

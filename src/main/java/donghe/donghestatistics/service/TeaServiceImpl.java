@@ -51,6 +51,8 @@ public class TeaServiceImpl implements TeaService {
     private TeaInterestedDAO teaInterestedDAO;
     @Autowired
     private TeaInterestedPriceMonthCutDAO teaInterestedPriceMonthCutDAO;
+    @Autowired
+    private ParamByMonthDAO paramByMonthDAO;
 
     public void getTeaPriceMonth() {
         List<Integer> goodsIdList = getGoodsIdList();
@@ -337,11 +339,11 @@ public class TeaServiceImpl implements TeaService {
     }
 
     public void getTeaInterestedPriceMonthUnCut() {
-        List<Integer> goodsIdsInterested=teaInterestedDAO.getGoodsIdInterested();
-        for (Integer goodsId:goodsIdsInterested) {
-            List<TeaPriceMonth> teaPriceMonthList=teaPriceMonthDAO.getTeaPriceMonthByGoodsId(goodsId);
-            for (TeaPriceMonth teaPriceMonth:teaPriceMonthList) {
-                TeaInterestedPriceMonthCut teaInterestedPriceMonthCut=new TeaInterestedPriceMonthCut();
+        List<Integer> goodsIdsInterested = teaInterestedDAO.getGoodsIdInterested();
+        for (Integer goodsId : goodsIdsInterested) {
+            List<TeaPriceMonth> teaPriceMonthList = teaPriceMonthDAO.getTeaPriceMonthByGoodsId(goodsId);
+            for (TeaPriceMonth teaPriceMonth : teaPriceMonthList) {
+                TeaInterestedPriceMonthCut teaInterestedPriceMonthCut = new TeaInterestedPriceMonthCut();
                 teaInterestedPriceMonthCut.setName(teaPriceMonth.getName());
                 teaInterestedPriceMonthCut.setGoodsId(teaPriceMonth.getGoodsId());
                 teaInterestedPriceMonthCut.setAvgPrice(teaPriceMonth.getAvgPrice());
@@ -351,34 +353,55 @@ public class TeaServiceImpl implements TeaService {
         }
 
     }
-    public String getPivotYearMonth(String yearMonth){
-        String year=yearMonth.substring(0,4);
-        String month=yearMonth.substring(5,7);
 
-        if (StringUtils.equals(month,"01") || StringUtils.equals(month,"02") || StringUtils.equals(month,"03")
-                || StringUtils.equals(month,"04") || StringUtils.equals(month,"05") || StringUtils.equals(month,"06")){
-            return year+"-01";
-        }else{
-            return year+"-07";
+    public String getPivotYearMonth(String yearMonth) {
+        String year = yearMonth.substring(0, 4);
+        String month = yearMonth.substring(5, 7);
+
+        if (StringUtils.equals(month, "01") || StringUtils.equals(month, "02") || StringUtils.equals(month, "03")
+                || StringUtils.equals(month, "04") || StringUtils.equals(month, "05") || StringUtils.equals(month, "06")) {
+            return year + "-01";
+        } else {
+            return year + "-07";
         }
     }
 
-    public void getTeaInterestedPriceMonthCut(){
-        List<Integer> goodsIdsInterested=teaInterestedDAO.getGoodsIdInterested();
-        for (Integer goodsId:goodsIdsInterested) {
-            List<TeaPriceMonth> teaPriceMonthList=teaPriceMonthDAO.getTeaPriceMonthByGoodsId(goodsId);
-            for (TeaPriceMonth teaPriceMonth:teaPriceMonthList) {
-               String yearMonth=teaPriceMonth.getYearMonth();
-               String pivotYearMonth=getPivotYearMonth(yearMonth);
-               if (teaPriceMonthDAO.existOrNotByGoodsIdAndYearMonth(goodsId, pivotYearMonth)){
-                   Double d1=teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(goodsId,yearMonth);
-                   Double d2=teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(goodsId,pivotYearMonth);
-                   Double prop=d1/d2;
-                   teaInterestedPriceMonthCutDAO.updateProp(goodsId,yearMonth, prop);
-               }else {
-                 teaInterestedPriceMonthCutDAO.deleteByGoodsIdAndYearMonth(goodsId,yearMonth);
-               }
+    public void getTeaInterestedPriceMonthCut() {
+        List<Integer> goodsIdsInterested = teaInterestedDAO.getGoodsIdInterested();
+        for (Integer goodsId : goodsIdsInterested) {
+            List<TeaPriceMonth> teaPriceMonthList = teaPriceMonthDAO.getTeaPriceMonthByGoodsId(goodsId);
+            for (TeaPriceMonth teaPriceMonth : teaPriceMonthList) {
+                String yearMonth = teaPriceMonth.getYearMonth();
+                String pivotYearMonth = getPivotYearMonth(yearMonth);
+                if (teaPriceMonthDAO.existOrNotByGoodsIdAndYearMonth(goodsId, pivotYearMonth)) {
+                    Double d1 = teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(goodsId, yearMonth);
+                    Double d2 = teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(goodsId, pivotYearMonth);
+                    Double prop = d1 / d2;
+                    teaInterestedPriceMonthCutDAO.updateProp(goodsId, yearMonth, prop);
+                } else {
+                    teaInterestedPriceMonthCutDAO.deleteByGoodsIdAndYearMonth(goodsId, yearMonth);
+                }
             }
         }
     }
+
+    public void getEstimatedAvgPrice(Double regFactor) {
+        List<TeaInterestedPriceMonthCut> teaInterestedPriceMonthCutList = teaInterestedPriceMonthCutDAO.getTeaInterestedPriceMonthCutList();
+        for (TeaInterestedPriceMonthCut teaInterestedPriceMonthCut : teaInterestedPriceMonthCutList) {
+            String yearMonth = teaInterestedPriceMonthCut.getYearMonth();
+            ParamByMonth paramByMonth = paramByMonthDAO.getByYearMonth(yearMonth);
+            TeaInterested teaInterested = teaInterestedDAO.getByGoodsId(teaInterestedPriceMonthCut.getGoodsId());
+            Double estimatedAvgPrice = paramByMonth.getIntercept() + paramByMonth.getPolicyParam() * teaInterested.getByOrder(1) + paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(2) +
+                    paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(3) + paramByMonth.getReputationParam() * teaInterested.getByOrder(4) + paramByMonth.getYearParam() * teaInterested.getByOrder(5) +
+                    paramByMonth.getBrandParam() * teaInterested.getByOrder(6) + paramByMonth.getAreaParam() * teaInterested.getByOrder(7) + paramByMonth.getScarcityParam() * teaInterested.getByOrder(8) +
+                    paramByMonth.getSeasoningParam() * teaInterested.getByOrder(9) + paramByMonth.getFlavorParam() * teaInterested.getByOrder(10) +
+                    +regFactor * (Math.pow(paramByMonth.getIntercept(), 2) + Math.pow(paramByMonth.getPolicyParam(), 2) + Math.pow(paramByMonth.getHotMoneyParam(), 2) +
+                            Math.pow(paramByMonth.getHypeParam(), 2) + Math.pow(paramByMonth.getReputationParam(), 2) + Math.pow(paramByMonth.getYearParam(), 2) +
+                            Math.pow(paramByMonth.getBrandParam(), 2) + Math.pow(paramByMonth.getAreaParam(), 2) + Math.pow(paramByMonth.getScarcityParam(), 2) +
+                            Math.pow(paramByMonth.getScarcityParam(), 2) + Math.pow(paramByMonth.getFlavorParam(), 2));
+            teaInterestedPriceMonthCutDAO.updateEstimatedAvgPrice(teaInterestedPriceMonthCut.getGoodsId(), yearMonth, estimatedAvgPrice);
+
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ public class TeaInterestedPriceMonthCut extends BaseEntity<donghe.donghestatisti
     private Integer goodsId;
     private Double avgPrice;
     private String yearMonth;
+    private Double estimatedAvgPrice;
 
     public String getName() {
         return name;
@@ -43,5 +44,13 @@ public class TeaInterestedPriceMonthCut extends BaseEntity<donghe.donghestatisti
 
     public void setYearMonth(String yearMonth) {
         this.yearMonth = yearMonth;
+    }
+
+    public Double getEstimatedAvgPrice() {
+        return estimatedAvgPrice;
+    }
+
+    public void setEstimatedAvgPrice(Double estimatedAvgPrice) {
+        this.estimatedAvgPrice = estimatedAvgPrice;
     }
 }

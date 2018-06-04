@@ -25,4 +25,5 @@ public interface TeaService {
     void getTeaInterestedPriceMonthUnCut();
     void getTeaInterestedPriceMonthCut();
     String getPivotYearMonth(String yearMonth);
+    void getEstimatedAvgPrice(Double regFactor);
 }

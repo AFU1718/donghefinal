@@ -1,14 +1,14 @@
 package donghe.donghestatistics.controller;
 
-import donghe.donghestatistics.domain.TeaInterested;
 import donghe.donghestatistics.service.TeaService;
+import donghe.donghestatistics.service.TrainingService;
+import donghe.donghestatistics.service.TrainingServiceImpl;
 import donghe.donghestatistics.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.ujmp.core.util.R;
 
 @RestController
 @RequestMapping(value = "/donghe")
@@ -16,7 +16,8 @@ import org.ujmp.core.util.R;
 public class TeaController {
     @Autowired
     private TeaService teaService;
-
+    @Autowired
+    private TrainingService trainingService;
     @RequestMapping(method = RequestMethod.GET)
     public Result getGoodsId() throws Exception {
         teaService.getGoodsId();
@@ -65,5 +66,16 @@ public class TeaController {
         return Result.success(teaService.getPivotYearMonth("2018-05"));
 
     }
+    @RequestMapping(value = "/train", method = RequestMethod.GET)
+    public Result train(){
+        trainingService.train();
+        return Result.success();
+    }
+    @RequestMapping(value = "/estimatedAvgPrice", method = RequestMethod.GET)
+    public Result getEstimatedAvgPrice(){
+        teaService.getEstimatedAvgPrice(0.1);
+        return Result.success();
+    }
+
 
 }
