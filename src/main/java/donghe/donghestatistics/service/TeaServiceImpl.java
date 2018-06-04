@@ -352,8 +352,8 @@ public class TeaServiceImpl implements TeaService {
 
     }
     public String getPivotYearMonth(String yearMonth){
-        String year=yearMonth.substring(0,3);
-        String month=yearMonth.substring(5,6);
+        String year=yearMonth.substring(0,4);
+        String month=yearMonth.substring(5,7);
 
         if (StringUtils.equals(month,"01") || StringUtils.equals(month,"02") || StringUtils.equals(month,"03")
                 || StringUtils.equals(month,"04") || StringUtils.equals(month,"05") || StringUtils.equals(month,"06")){

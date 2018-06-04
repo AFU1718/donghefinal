@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.ujmp.core.util.R;
 
 @RestController
 @RequestMapping(value = "/donghe")
@@ -59,6 +60,10 @@ public class TeaController {
         teaService.getTeaInterestedPriceMonthCut();
         return Result.success();
     }
+    @RequestMapping(value = "/getPivotYearMonth", method = RequestMethod.GET)
+    public Result getPivotYearMonth(){
+        return Result.success(teaService.getPivotYearMonth("2018-05"));
 
+    }
 
 }
