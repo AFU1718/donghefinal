@@ -23,4 +23,5 @@ public interface TeaService {
                                     Double area, Double scarcity, Double seasoning, Double flavor);
 
     void getTeaInterestedPriceMonthUnCut();
+    void getTeaInterestedPriceMonthCut();
 }

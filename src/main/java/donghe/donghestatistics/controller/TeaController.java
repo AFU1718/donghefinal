@@ -54,7 +54,11 @@ public class TeaController {
         teaService.getTeaInterestedPriceMonthUnCut();
         return Result.success();
     }
-
+    @RequestMapping(value = "/getTeaInterestedPriceMonthCut", method = RequestMethod.GET)
+    public Result getTeaInterestedPriceMonthCut(){
+        teaService.getTeaInterestedPriceMonthCut();
+        return Result.success();
+    }
 
 
 }
