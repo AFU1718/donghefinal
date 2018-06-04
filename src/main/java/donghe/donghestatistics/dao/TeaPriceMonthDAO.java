@@ -23,4 +23,31 @@ public class TeaPriceMonthDAO extends BaseDAO<TeaPriceMonth> {
             return  query.list();
         }
     }
+
+    public Boolean existOrNotByGoodsIdAndYearMonth(Integer goodsId,String yearMonth){
+        String hql = "from TeaPriceMonth t where t.goodsId=? and t.yearMonth=?";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setInteger(0,goodsId);
+        query.setString(1, yearMonth);
+        query.setFirstResult(0);
+        query.setMaxResults(1);
+        if (query.list() == null || query.list().size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public Double getAvgPriceByGoodsIdAndYearMonth(Integer goodsId,String yearMonth){
+        String hql = "SELECT t.avgPrice from TeaPriceMonth t where t.goodsId=? and t.yearMonth=? ";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+
+        query.setInteger(0,goodsId);
+        query.setString(1, yearMonth);
+
+        if (query.list() == null || query.list().size() == 0) {
+            return null;
+        } else {
+            return (Double) query.list().get(0);
+        }
+    }
 }

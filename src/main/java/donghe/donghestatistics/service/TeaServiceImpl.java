@@ -1,6 +1,7 @@
 package donghe.donghestatistics.service;
 
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import donghe.donghestatistics.dao.*;
@@ -349,5 +350,35 @@ public class TeaServiceImpl implements TeaService {
             }
         }
 
+    }
+    public String getPivotYearMonth(String yearMonth){
+        String year=yearMonth.substring(0,3);
+        String month=yearMonth.substring(5,6);
+
+        if (StringUtils.equals(month,"01") || StringUtils.equals(month,"02") || StringUtils.equals(month,"03")
+                || StringUtils.equals(month,"04") || StringUtils.equals(month,"05") || StringUtils.equals(month,"06")){
+            return year+"-01";
+        }else{
+            return year+"-07";
+        }
+    }
+
+    public void getTeaInterestedPriceMonthCut(){
+        List<Integer> goodsIdsInterested=teaInterestedDAO.getGoodsIdInterested();
+        for (Integer goodsId:goodsIdsInterested) {
+            List<TeaPriceMonth> teaPriceMonthList=teaPriceMonthDAO.getTeaPriceMonthByGoodsId(goodsId);
+            for (TeaPriceMonth teaPriceMonth:teaPriceMonthList) {
+               String yearMonth=teaPriceMonth.getYearMonth();
+               String pivotYearMonth=getPivotYearMonth(yearMonth);
+               if (teaPriceMonthDAO.existOrNotByGoodsIdAndYearMonth(goodsId, pivotYearMonth)){
+                   Double d1=teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(goodsId,yearMonth);
+                   Double d2=teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(goodsId,pivotYearMonth);
+                   Double prop=d1/d2;
+                   teaInterestedPriceMonthCutDAO.updateProp(goodsId,yearMonth, prop);
+               }else {
+                 teaInterestedPriceMonthCutDAO.deleteByGoodsIdAndYearMonth(goodsId,yearMonth);
+               }
+            }
+        }
     }
 }
