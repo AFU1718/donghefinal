@@ -49,5 +49,12 @@ public class TeaController {
                                     @RequestParam Double area, @RequestParam Double scarcity, @RequestParam Double seasoning, @RequestParam Double flavor){
         return Result.success(teaService.postTeaInterested(goodsId,reputation,year,brand,area,scarcity,seasoning,flavor));
     }
+    @RequestMapping(value = "/getTeaInterestedPriceMonthUnCut", method = RequestMethod.GET)
+    public Result getTeaInterestedPriceMonthUnCut(){
+        teaService.getTeaInterestedPriceMonthUnCut();
+        return Result.success();
+    }
+
+
 
 }

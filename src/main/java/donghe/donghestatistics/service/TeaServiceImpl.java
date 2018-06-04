@@ -3,14 +3,8 @@ package donghe.donghestatistics.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import donghe.donghestatistics.dao.TeaDAO;
-import donghe.donghestatistics.dao.TeaInterestedDAO;
-import donghe.donghestatistics.dao.TeaPriceDAO;
-import donghe.donghestatistics.dao.TeaPriceMonthDAO;
-import donghe.donghestatistics.domain.Tea;
-import donghe.donghestatistics.domain.TeaInterested;
-import donghe.donghestatistics.domain.TeaPrice;
-import donghe.donghestatistics.domain.TeaPriceMonth;
+import donghe.donghestatistics.dao.*;
+import donghe.donghestatistics.domain.*;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -54,6 +48,8 @@ public class TeaServiceImpl implements TeaService {
     private TeaPriceMonthDAO teaPriceMonthDAO;
     @Autowired
     private TeaInterestedDAO teaInterestedDAO;
+    @Autowired
+    private TeaInterestedPriceMonthCutDAO teaInterestedPriceMonthCutDAO;
 
     public void getTeaPriceMonth() {
         List<Integer> goodsIdList = getGoodsIdList();
@@ -324,8 +320,8 @@ public class TeaServiceImpl implements TeaService {
     }
 
     public TeaInterested postTeaInterested(Integer goodsId, Double reputation, Double year, Double brand,
-                                           Double area, Double scarcity, Double seasoning, Double flavor){
-        TeaInterested teaInterested=new TeaInterested();
+                                           Double area, Double scarcity, Double seasoning, Double flavor) {
+        TeaInterested teaInterested = new TeaInterested();
         teaInterested.setName(teaDAO.getNameByGoodsId(goodsId));
         teaInterested.setGoodsId(goodsId);
         teaInterested.setReputation(reputation);
@@ -339,4 +335,19 @@ public class TeaServiceImpl implements TeaService {
         return teaInterested;
     }
 
+    public void getTeaInterestedPriceMonthUnCut() {
+        List<Integer> goodsIdsInterested=teaInterestedDAO.getGoodsIdInterested();
+        for (Integer goodsId:goodsIdsInterested) {
+            List<TeaPriceMonth> teaPriceMonthList=teaPriceMonthDAO.getTeaPriceMonthByGoodsId(goodsId);
+            for (TeaPriceMonth teaPriceMonth:teaPriceMonthList) {
+                TeaInterestedPriceMonthCut teaInterestedPriceMonthCut=new TeaInterestedPriceMonthCut();
+                teaInterestedPriceMonthCut.setName(teaPriceMonth.getName());
+                teaInterestedPriceMonthCut.setGoodsId(teaPriceMonth.getGoodsId());
+                teaInterestedPriceMonthCut.setAvgPrice(teaPriceMonth.getAvgPrice());
+                teaInterestedPriceMonthCut.setYearMonth(teaPriceMonth.getYearMonth());
+                teaInterestedPriceMonthCutDAO.create(teaInterestedPriceMonthCut);
+            }
+        }
+
+    }
 }
