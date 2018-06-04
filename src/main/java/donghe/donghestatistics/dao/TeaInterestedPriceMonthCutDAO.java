@@ -6,7 +6,9 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMonthCut> {
@@ -17,7 +19,7 @@ public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMon
     public void updateProp(Integer goodsId, String yearMonth, Double prop) {
         String hql = "update TeaInterestedPriceMonthCut t set t.avgPrice = ?  where t.goodsId= ? and t.yearMonth=? ";
         org.hibernate.Query query = sessionFactory.getCurrentSession().createQuery(hql);
-        query.setDouble(0,prop);
+        query.setDouble(0, prop);
         query.setInteger(1, goodsId);
         query.setString(2, yearMonth);
 
@@ -25,8 +27,8 @@ public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMon
 
     }
 
-    public void deleteByGoodsIdAndYearMonth(Integer goodsId,String yearMonth){
-        String hql="delete TeaInterestedPriceMonthCut t where t.goodsId= ? and t.yearMonth=?";
+    public void deleteByGoodsIdAndYearMonth(Integer goodsId, String yearMonth) {
+        String hql = "delete TeaInterestedPriceMonthCut t where t.goodsId= ? and t.yearMonth=?";
         org.hibernate.Query query = sessionFactory.getCurrentSession().createQuery(hql);
 
         query.setInteger(0, goodsId);
@@ -35,11 +37,11 @@ public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMon
 
     }
 
-    public Double getAvgPriceByGoodsIdAndYearMonth(Integer goodsId,String yearMonth){
+    public Double getAvgPriceByGoodsIdAndYearMonth(Integer goodsId, String yearMonth) {
         String hql = "SELECT t.avgPrice from TeaInterestedPriceMonthCut t where t.goodsId=? and t.yearMonth=? ";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
 
-        query.setInteger(0,goodsId);
+        query.setInteger(0, goodsId);
         query.setString(1, yearMonth);
 
         if (query.list() == null || query.list().size() == 0) {
@@ -48,7 +50,8 @@ public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMon
             return (Double) query.list().get(0);
         }
     }
-    public Boolean existOrNotByYearMonth(String yearMonth){
+
+    public Boolean existOrNotByYearMonth(String yearMonth) {
         String hql = "from TeaInterestedPriceMonthCut t where t.yearMonth=?";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setString(0, yearMonth);
@@ -60,21 +63,23 @@ public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMon
             return true;
         }
     }
-    public List<Integer> getGoodsIdByYearMonth(String yearMonth){
+
+    public List<Integer> getGoodsIdByYearMonth(String yearMonth) {
         String hql = "select distinct(t.goodsId) from  TeaInterestedPriceMonthCut t where t.yearMonth=?";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setString(0, yearMonth);
 
         List list = query.list();
-        List<Integer> goodsIdList =new ArrayList<>();
-        for (Object o:list) {
+        List<Integer> goodsIdList = new ArrayList<>();
+        for (Object o : list) {
 
-            Integer i=(Integer)(o);
+            Integer i = (Integer) (o);
             goodsIdList.add(i);
         }
         return goodsIdList;
     }
-    public List<TeaInterestedPriceMonthCut> getTeaInterestedPriceMonthCutList(){
+
+    public List<TeaInterestedPriceMonthCut> getTeaInterestedPriceMonthCutList() {
         String hql = "from TeaInterestedPriceMonthCut t";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         if (query.list() == null || query.list().size() == 0) {
@@ -83,13 +88,29 @@ public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMon
             return query.list();
         }
     }
+
     public void updateEstimatedAvgPrice(Integer goodsId, String yearMonth, Double estimatedAvgPrice) {
         String hql = "update TeaInterestedPriceMonthCut t set t.estimatedAvgPrice = ?  where t.goodsId= ? and t.yearMonth=? ";
         org.hibernate.Query query = sessionFactory.getCurrentSession().createQuery(hql);
-        query.setDouble(0,estimatedAvgPrice);
+        query.setDouble(0, estimatedAvgPrice);
         query.setInteger(1, goodsId);
         query.setString(2, yearMonth);
         query.executeUpdate();
+
+    }
+
+    public Map<String, Double> getAverage() {
+        String hql = "select t.yearMonth,avg(t.avgPrice) from  TeaInterestedPriceMonthCut t GROUP BY t.yearMonth";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        List list = query.list();
+
+        Map<String, Double> map = new HashMap<>();
+        for (Object o : list) {
+            String yearMonth = String.valueOf(((Object[]) (o))[0]);
+            Double avg = Double.parseDouble(((Object[]) (o))[1].toString());
+            map.put(yearMonth, avg);
+        }
+        return map;
 
     }
 

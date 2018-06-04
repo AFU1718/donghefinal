@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -357,12 +358,30 @@ public class TeaServiceImpl implements TeaService {
     public String getPivotYearMonth(String yearMonth) {
         String year = yearMonth.substring(0, 4);
         String month = yearMonth.substring(5, 7);
-
-        if (StringUtils.equals(month, "01") || StringUtils.equals(month, "02") || StringUtils.equals(month, "03")
-                || StringUtils.equals(month, "04") || StringUtils.equals(month, "05") || StringUtils.equals(month, "06")) {
-            return year + "-01";
-        } else {
+        if (StringUtils.equals(month, "01")){
+           return String.valueOf(Integer.parseInt(year)-1)+"-12";
+        }else if (StringUtils.equals(month, "02")){
+           return year + "-01";
+        }else if (StringUtils.equals(month, "03")){
+            return year + "-02";
+        }else if (StringUtils.equals(month, "04")){
+            return year + "-03";
+        }else if (StringUtils.equals(month, "05")){
+            return year + "-04";
+        }else if (StringUtils.equals(month, "06")){
+            return year + "-05";
+        }else if (StringUtils.equals(month, "07")){
+            return year + "-06";
+        }else if (StringUtils.equals(month, "08")){
             return year + "-07";
+        }else if (StringUtils.equals(month, "09")){
+            return year + "-08";
+        }else if (StringUtils.equals(month, "10")){
+            return year + "-09";
+        }else if (StringUtils.equals(month, "11")){
+            return year + "-10";
+        }else{
+            return year + "-11";
         }
     }
 
@@ -402,6 +421,9 @@ public class TeaServiceImpl implements TeaService {
             teaInterestedPriceMonthCutDAO.updateEstimatedAvgPrice(teaInterestedPriceMonthCut.getGoodsId(), yearMonth, estimatedAvgPrice);
 
         }
+    }
+    public Map<String, Double> getAverage(){
+      return  teaInterestedPriceMonthCutDAO.getAverage();
     }
 
 }

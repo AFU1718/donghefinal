@@ -5,6 +5,7 @@ import donghe.donghestatistics.domain.TeaPriceMonth;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface TeaService {
     void getGoodsId() throws IOException;
@@ -26,4 +27,5 @@ public interface TeaService {
     void getTeaInterestedPriceMonthCut();
     String getPivotYearMonth(String yearMonth);
     void getEstimatedAvgPrice(Double regFactor);
+    Map<String, Double> getAverage();
 }
