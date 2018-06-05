@@ -45,6 +45,7 @@ public class TeaController {
 
     @RequestMapping(value = "/teaPriceMonth", method = RequestMethod.GET)
     public Result getTeaPriceMonth()throws Exception {
+        teaService.clearZeroPrice();
         teaService.getTeaPriceMonth();
         return Result.success();
     }
@@ -65,7 +66,7 @@ public class TeaController {
     }
     @RequestMapping(value = "/getPivotYearMonth", method = RequestMethod.GET)
     public Result getPivotYearMonth(){
-        return Result.success(teaService.getPivotYearMonth("2018-05"));
+        return Result.success(teaService.getPivotYearMonth("2018-01"));
 
     }
     @RequestMapping(value = "/train", method = RequestMethod.GET)

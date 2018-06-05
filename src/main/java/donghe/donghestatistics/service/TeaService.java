@@ -18,6 +18,8 @@ public interface TeaService {
 
     void getTeaPriceMonthByGoodsId(Integer goodsId);
 
+    void clearZeroPrice();
+
     void getTeaPriceMonth();
 
     TeaInterested postTeaInterested(Integer goodsId, Double reputation, Double year, Double brand,

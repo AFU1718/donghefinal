@@ -55,6 +55,10 @@ public class TeaServiceImpl implements TeaService {
     @Autowired
     private ParamByMonthDAO paramByMonthDAO;
 
+    public void clearZeroPrice(){
+        teaPriceDAO.clearZeroPrice();
+    }
+
     public void getTeaPriceMonth() {
         List<Integer> goodsIdList = getGoodsIdList();
         for (Integer i : goodsIdList) {
@@ -396,6 +400,10 @@ public class TeaServiceImpl implements TeaService {
                     Double d1 = teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(goodsId, yearMonth);
                     Double d2 = teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(goodsId, pivotYearMonth);
                     Double prop = d1 / d2;
+                    System.out.println("大会的角度讲"+d2);
+                    System.out.println("复合肥就"+goodsId+"   "+yearMonth);
+
+                    System.out.println(prop);
                     teaInterestedPriceMonthCutDAO.updateProp(goodsId, yearMonth, prop);
                 } else {
                     teaInterestedPriceMonthCutDAO.deleteByGoodsIdAndYearMonth(goodsId, yearMonth);

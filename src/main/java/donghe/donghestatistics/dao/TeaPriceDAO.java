@@ -31,4 +31,10 @@ public class TeaPriceDAO extends BaseDAO<TeaPrice> {
         }
         return teaPriceMonthList;
     }
+    public void clearZeroPrice(){
+        String hql = "delete TeaPrice t where t.price= ? ";
+        org.hibernate.Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setDouble(0, 0.0);
+        query.executeUpdate();
+    }
 }
