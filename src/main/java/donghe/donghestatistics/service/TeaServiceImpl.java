@@ -57,7 +57,7 @@ public class TeaServiceImpl implements TeaService {
     @Autowired
     private PriceMonthAvgDAO priceMonthAvgDAO;
 
-    public void clearZeroPrice(){
+    public void clearZeroPrice() {
         teaPriceDAO.clearZeroPrice();
     }
 
@@ -364,29 +364,29 @@ public class TeaServiceImpl implements TeaService {
     public String getPivotYearMonth(String yearMonth) {
         String year = yearMonth.substring(0, 4);
         String month = yearMonth.substring(5, 7);
-        if (StringUtils.equals(month, "01")){
-           return String.valueOf(Integer.parseInt(year)-1)+"-12";
-        }else if (StringUtils.equals(month, "02")){
-           return year + "-01";
-        }else if (StringUtils.equals(month, "03")){
+        if (StringUtils.equals(month, "01")) {
+            return String.valueOf(Integer.parseInt(year) - 1) + "-12";
+        } else if (StringUtils.equals(month, "02")) {
+            return year + "-01";
+        } else if (StringUtils.equals(month, "03")) {
             return year + "-02";
-        }else if (StringUtils.equals(month, "04")){
+        } else if (StringUtils.equals(month, "04")) {
             return year + "-03";
-        }else if (StringUtils.equals(month, "05")){
+        } else if (StringUtils.equals(month, "05")) {
             return year + "-04";
-        }else if (StringUtils.equals(month, "06")){
+        } else if (StringUtils.equals(month, "06")) {
             return year + "-05";
-        }else if (StringUtils.equals(month, "07")){
+        } else if (StringUtils.equals(month, "07")) {
             return year + "-06";
-        }else if (StringUtils.equals(month, "08")){
+        } else if (StringUtils.equals(month, "08")) {
             return year + "-07";
-        }else if (StringUtils.equals(month, "09")){
+        } else if (StringUtils.equals(month, "09")) {
             return year + "-08";
-        }else if (StringUtils.equals(month, "10")){
+        } else if (StringUtils.equals(month, "10")) {
             return year + "-09";
-        }else if (StringUtils.equals(month, "11")){
+        } else if (StringUtils.equals(month, "11")) {
             return year + "-10";
-        }else{
+        } else {
             return year + "-11";
         }
     }
@@ -418,7 +418,7 @@ public class TeaServiceImpl implements TeaService {
             String yearMonth = teaInterestedPriceMonthCut.getYearMonth();
             ParamByMonth paramByMonth = paramByMonthDAO.getByYearMonth(yearMonth);
             TeaInterested teaInterested = teaInterestedDAO.getByGoodsId(teaInterestedPriceMonthCut.getGoodsId());
-            Double estimatedAvgPrice = 1+paramByMonth.getIntercept() + paramByMonth.getPolicyParam() * teaInterested.getByOrder(1) + paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(2) +
+            Double estimatedAvgPrice = 1 + paramByMonth.getIntercept() + paramByMonth.getPolicyParam() * teaInterested.getByOrder(1) + paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(2) +
                     paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(3) + paramByMonth.getReputationParam() * teaInterested.getByOrder(4) + paramByMonth.getYearParam() * teaInterested.getByOrder(5) +
                     paramByMonth.getBrandParam() * teaInterested.getByOrder(6) + paramByMonth.getAreaParam() * teaInterested.getByOrder(7) + paramByMonth.getScarcityParam() * teaInterested.getByOrder(8) +
                     paramByMonth.getSeasoningParam() * teaInterested.getByOrder(9) + paramByMonth.getFlavorParam() * teaInterested.getByOrder(10) +
@@ -431,11 +431,14 @@ public class TeaServiceImpl implements TeaService {
         }
     }
 
-    public void getAverage(){
-      List<PriceMonthAvg> priceMonthAvgList= teaInterestedPriceMonthCutDAO.getAverage();
-        for (PriceMonthAvg priceMonthAvg:priceMonthAvgList) {
+    public void getAverage() {
+        List<PriceMonthAvg> priceMonthAvgList = teaInterestedPriceMonthCutDAO.getAverage();
+        for (PriceMonthAvg priceMonthAvg : priceMonthAvgList) {
             priceMonthAvgDAO.create(priceMonthAvg);
         }
     }
 
+    public Double getError() {
+        return teaInterestedPriceMonthCutDAO.getError();
+    }
 }

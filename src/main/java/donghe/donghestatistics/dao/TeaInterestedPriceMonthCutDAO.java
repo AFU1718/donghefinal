@@ -117,5 +117,17 @@ public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMon
         return priceMonthAvgList;
 
     }
+    public Double getError(){
+        String hql=" select (t.avgPrice-t.estimatedAvgPrice) from  TeaInterestedPriceMonthCut t";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        List list = query.list();
+       Double err=0.0;
+        for (Object o : list) {
+            err=err+Math.pow((Double)(list.get(0)),2);
+        }
+
+      return err;
+
+    }
 
 }

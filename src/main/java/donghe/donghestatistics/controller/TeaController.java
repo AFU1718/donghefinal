@@ -76,7 +76,7 @@ public class TeaController {
     }
     @RequestMapping(value = "/estimatedAvgPrice", method = RequestMethod.GET)
     public Result getEstimatedAvgPrice(){
-        teaService.getEstimatedAvgPrice(0.01);
+        teaService.getEstimatedAvgPrice(0.1);
         return Result.success();
     }
     @RequestMapping(value = "/average", method = RequestMethod.GET)
@@ -84,6 +84,10 @@ public class TeaController {
         teaService.getAverage();
         return Result.success();
     }
+    @RequestMapping(value = "/error", method = RequestMethod.GET)
+    public Result getError(){
 
+        return Result.success(teaService.getError());
+    }
 
 }

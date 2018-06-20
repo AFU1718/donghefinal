@@ -30,4 +30,5 @@ public interface TeaService {
     String getPivotYearMonth(String yearMonth);
     void getEstimatedAvgPrice(Double regFactor);
     void getAverage();
+    Double getError();
 }
