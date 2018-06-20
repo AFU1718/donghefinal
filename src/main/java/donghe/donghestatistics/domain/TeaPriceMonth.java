@@ -11,6 +11,7 @@ public class TeaPriceMonth extends BaseEntity<donghe.donghestatistics.domain.Tea
     private String name;
     private Integer goodsId;
     private Double avgPrice;
+    private Double estimatedAvgPrice;
     private String yearMonth;
 
     public String getName() {
@@ -35,6 +36,14 @@ public class TeaPriceMonth extends BaseEntity<donghe.donghestatistics.domain.Tea
 
     public void setAvgPrice(Double avgPrice) {
         this.avgPrice = avgPrice;
+    }
+
+    public Double getEstimatedAvgPrice() {
+        return estimatedAvgPrice;
+    }
+
+    public void setEstimatedAvgPrice(Double estimatedAvgPrice) {
+        this.estimatedAvgPrice = estimatedAvgPrice;
     }
 
     public String getYearMonth() {
