@@ -228,7 +228,7 @@ public void train() {
                 for (Integer goodsId : goodsIdList) {
                     teaList.add(teaInterestedDAO.getByGoodsId(goodsId));
                 }
-                Matrix matrix = getParamByMonthMatrix(teaList, 0.00000000001, yearMonth);
+                Matrix matrix = getParamByMonthMatrix(teaList, 0.0000000001, yearMonth);
                 ParamByMonth paramByMonth=matrixToParamMonth(yearMonth, matrix);
                 paramByMonthDAO.create(paramByMonth);
             }
