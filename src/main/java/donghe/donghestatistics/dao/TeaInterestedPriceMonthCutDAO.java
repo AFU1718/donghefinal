@@ -1,6 +1,7 @@
 package donghe.donghestatistics.dao;
 
 
+import donghe.donghestatistics.domain.PriceMonthAvg;
 import donghe.donghestatistics.domain.TeaInterestedPriceMonthCut;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -99,18 +100,21 @@ public class TeaInterestedPriceMonthCutDAO extends BaseDAO<TeaInterestedPriceMon
 
     }
 
-    public Map<String, Double> getAverage() {
-        String hql = "select t.yearMonth,avg(t.avgPrice) from  TeaInterestedPriceMonthCut t GROUP BY t.yearMonth";
+    public List<PriceMonthAvg> getAverage() {
+        String hql = "select t.yearMonth,avg(t.avgPrice) from TeaInterestedPriceMonthCut t GROUP BY t.yearMonth";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         List list = query.list();
 
-        Map<String, Double> map = new HashMap<>();
+        List<PriceMonthAvg> priceMonthAvgList=new ArrayList<>();
         for (Object o : list) {
             String yearMonth = String.valueOf(((Object[]) (o))[0]);
             Double avg = Double.parseDouble(((Object[]) (o))[1].toString());
-            map.put(yearMonth, avg);
+            PriceMonthAvg priceMonthAvg=new PriceMonthAvg();
+            priceMonthAvg.setYearMonth(yearMonth);
+            priceMonthAvg.setPriceMonthAvg(avg);
+            priceMonthAvgList.add(priceMonthAvg);
         }
-        return map;
+        return priceMonthAvgList;
 
     }
 

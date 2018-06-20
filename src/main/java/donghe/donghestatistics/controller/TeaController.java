@@ -81,8 +81,8 @@ public class TeaController {
     }
     @RequestMapping(value = "/average", method = RequestMethod.GET)
     public Result getAverage(){
-        return Result.success(teaService.getAverage());
-
+        teaService.getAverage();
+        return Result.success();
     }
 
 

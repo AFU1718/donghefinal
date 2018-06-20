@@ -3,6 +3,7 @@ package donghe.donghestatistics.service;
 import donghe.donghestatistics.dao.ParamByMonthDAO;
 import donghe.donghestatistics.dao.TeaInterestedDAO;
 import donghe.donghestatistics.dao.TeaInterestedPriceMonthCutDAO;
+import donghe.donghestatistics.dao.TeaPriceMonthDAO;
 import donghe.donghestatistics.domain.ParamByMonth;
 import donghe.donghestatistics.domain.TeaInterested;
 
@@ -24,6 +25,8 @@ public class TrainingServiceImpl implements TrainingService{
     private TeaInterestedDAO teaInterestedDAO;
     @Autowired
     private ParamByMonthDAO paramByMonthDAO;
+    @Autowired
+    private TeaPriceMonthDAO teaPriceMonthDAO;
 
     private Matrix getX(List<TeaInterested> teaList) {
         int m = teaList.size();
@@ -41,7 +44,8 @@ public class TrainingServiceImpl implements TrainingService{
         Matrix matrix = Matrix.Factory.zeros(m, 1);
         for (int i = 0; i < matrix.getSize()[0]; ++i) {
             for (int j = 0; j < matrix.getSize()[1]; ++j) {
-                matrix.setAsDouble(teaInterestedPriceMonthCutDAO.getAvgPriceByGoodsIdAndYearMonth(teaList.get(i).getGoodsId(), yearMonth)-1.0, i, j);
+//                matrix.setAsDouble(teaInterestedPriceMonthCutDAO.getAvgPriceByGoodsIdAndYearMonth(teaList.get(i).getGoodsId(), yearMonth)-1.0, i, j);
+                matrix.setAsDouble(teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(teaList.get(i).getGoodsId(), yearMonth), i, j);
             }
         }
         return matrix;
@@ -186,29 +190,52 @@ public class TrainingServiceImpl implements TrainingService{
         return 0.0;
     }
 
-    public void train() {
-        for (int i = 2008; i <= 2018; i++) {
-            for (int j = 1; j <= 12; j++) {
-                String yearMonth = null;
-                List<TeaInterested> teaList = new ArrayList<>();
-                if (j <= 9) {
-                    yearMonth = String.valueOf(i) + "-0" + String.valueOf(j);
-                } else {
-                    yearMonth = String.valueOf(i) + "-" + String.valueOf(j);
-                }
-                if (teaInterestedPriceMonthCutDAO.existOrNotByYearMonth(yearMonth)) {
-                    List<Integer> goodsIdList = teaInterestedPriceMonthCutDAO.getGoodsIdByYearMonth(yearMonth);
-                    for (Integer goodsId : goodsIdList) {
-                        teaList.add(teaInterestedDAO.getByGoodsId(goodsId));
-                    }
-                    Matrix matrix = getParamByMonthMatrix(teaList, 0.1, yearMonth);
-                    ParamByMonth paramByMonth=matrixToParamMonth(yearMonth, matrix);
-                    paramByMonthDAO.create(paramByMonth);
-                }
-
+//    public void train() {
+//        for (int i = 2008; i <= 2018; i++) {
+//            for (int j = 1; j <= 12; j++) {
+//                String yearMonth = null;
+//                List<TeaInterested> teaList = new ArrayList<>();
+//                if (j <= 9) {
+//                    yearMonth = String.valueOf(i) + "-0" + String.valueOf(j);
+//                } else {
+//                    yearMonth = String.valueOf(i) + "-" + String.valueOf(j);
+//                }
+//                if (teaInterestedPriceMonthCutDAO.existOrNotByYearMonth(yearMonth)) {
+//                    List<Integer> goodsIdList = teaInterestedPriceMonthCutDAO.getGoodsIdByYearMonth(yearMonth);
+//                    for (Integer goodsId : goodsIdList) {
+//                        teaList.add(teaInterestedDAO.getByGoodsId(goodsId));
+//                    }
+//                    Matrix matrix = getParamByMonthMatrix(teaList, 0.1, yearMonth);
+//                    ParamByMonth paramByMonth=matrixToParamMonth(yearMonth, matrix);
+//                    paramByMonthDAO.create(paramByMonth);
+//                }
+//
+//            }
+//        }
+//    }
+public void train() {
+    for (int i = 2008; i <= 2018; i++) {
+        for (int j = 1; j <= 12; j++) {
+            String yearMonth = null;
+            List<TeaInterested> teaList = new ArrayList<>();
+            if (j <= 9) {
+                yearMonth = String.valueOf(i) + "-0" + String.valueOf(j);
+            } else {
+                yearMonth = String.valueOf(i) + "-" + String.valueOf(j);
             }
+            if (teaInterestedPriceMonthCutDAO.existOrNotByYearMonth(yearMonth)) {
+                List<Integer> goodsIdList = teaInterestedPriceMonthCutDAO.getGoodsIdByYearMonth(yearMonth);
+                for (Integer goodsId : goodsIdList) {
+                    teaList.add(teaInterestedDAO.getByGoodsId(goodsId));
+                }
+                Matrix matrix = getParamByMonthMatrix(teaList, 0.1, yearMonth);
+                ParamByMonth paramByMonth=matrixToParamMonth(yearMonth, matrix);
+                paramByMonthDAO.create(paramByMonth);
+            }
+
         }
     }
+}
     public void paint(){
 
     }

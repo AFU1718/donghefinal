@@ -29,5 +29,5 @@ public interface TeaService {
     void getTeaInterestedPriceMonthCut();
     String getPivotYearMonth(String yearMonth);
     void getEstimatedAvgPrice(Double regFactor);
-    Map<String, Double> getAverage();
+    void getAverage();
 }
