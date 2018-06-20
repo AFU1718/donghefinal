@@ -212,7 +212,7 @@ public class TrainingServiceImpl implements TrainingService{
 //            }
 //        }
 //    }
-public void train() {
+public void train(Double regFactor) {
     for (int i = 2008; i <= 2018; i++) {
         for (int j = 1; j <= 12; j++) {
             String yearMonth = null;
@@ -227,7 +227,7 @@ public void train() {
                 for (Integer goodsId : goodsIdList) {
                     teaList.add(teaInterestedDAO.getByGoodsId(goodsId));
                 }
-                Matrix matrix = getParamByMonthMatrix(teaList, 0.1, yearMonth);
+                Matrix matrix = getParamByMonthMatrix(teaList, regFactor, yearMonth);
                 ParamByMonth paramByMonth=matrixToParamMonth(yearMonth, matrix);
                 paramByMonthDAO.create(paramByMonth);
             }

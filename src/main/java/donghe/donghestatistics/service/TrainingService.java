@@ -1,5 +1,5 @@
 package donghe.donghestatistics.service;
 
 public interface TrainingService {
-    void train();
+    void train(Double regFactor);
 }
