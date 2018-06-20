@@ -44,8 +44,7 @@ public class TrainingServiceImpl implements TrainingService{
         Matrix matrix = Matrix.Factory.zeros(m, 1);
         for (int i = 0; i < matrix.getSize()[0]; ++i) {
             for (int j = 0; j < matrix.getSize()[1]; ++j) {
-//                matrix.setAsDouble(teaInterestedPriceMonthCutDAO.getAvgPriceByGoodsIdAndYearMonth(teaList.get(i).getGoodsId(), yearMonth)-1.0, i, j);
-                matrix.setAsDouble(teaPriceMonthDAO.getAvgPriceByGoodsIdAndYearMonth(teaList.get(i).getGoodsId(), yearMonth), i, j);
+                matrix.setAsDouble(teaInterestedPriceMonthCutDAO.getAvgPriceByGoodsIdAndYearMonth(teaList.get(i).getGoodsId(), yearMonth)-1.0, i, j);
             }
         }
         return matrix;
@@ -228,7 +227,7 @@ public void train() {
                 for (Integer goodsId : goodsIdList) {
                     teaList.add(teaInterestedDAO.getByGoodsId(goodsId));
                 }
-                Matrix matrix = getParamByMonthMatrix(teaList, 0.0000000001, yearMonth);
+                Matrix matrix = getParamByMonthMatrix(teaList, 0.01, yearMonth);
                 ParamByMonth paramByMonth=matrixToParamMonth(yearMonth, matrix);
                 paramByMonthDAO.create(paramByMonth);
             }

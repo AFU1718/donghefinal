@@ -418,7 +418,7 @@ public class TeaServiceImpl implements TeaService {
             String yearMonth = teaInterestedPriceMonthCut.getYearMonth();
             ParamByMonth paramByMonth = paramByMonthDAO.getByYearMonth(yearMonth);
             TeaInterested teaInterested = teaInterestedDAO.getByGoodsId(teaInterestedPriceMonthCut.getGoodsId());
-            Double estimatedAvgPrice = paramByMonth.getIntercept() + paramByMonth.getPolicyParam() * teaInterested.getByOrder(1) + paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(2) +
+            Double estimatedAvgPrice = 1+paramByMonth.getIntercept() + paramByMonth.getPolicyParam() * teaInterested.getByOrder(1) + paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(2) +
                     paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(3) + paramByMonth.getReputationParam() * teaInterested.getByOrder(4) + paramByMonth.getYearParam() * teaInterested.getByOrder(5) +
                     paramByMonth.getBrandParam() * teaInterested.getByOrder(6) + paramByMonth.getAreaParam() * teaInterested.getByOrder(7) + paramByMonth.getScarcityParam() * teaInterested.getByOrder(8) +
                     paramByMonth.getSeasoningParam() * teaInterested.getByOrder(9) + paramByMonth.getFlavorParam() * teaInterested.getByOrder(10) +
