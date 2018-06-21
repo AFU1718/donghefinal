@@ -51,7 +51,7 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     public Matrix getParamByMonthMatrix(List<TeaInterested> teaList, Double regFactor, String yearMonth) {
-        Matrix identity = Matrix.Factory.zeros(11, 11);
+        Matrix identity = Matrix.Factory.zeros(7, 7);
         identity.setAsDouble(1.0, 0, 0);
         identity.setAsDouble(1.0, 1, 1);
         identity.setAsDouble(1.0, 2, 2);
