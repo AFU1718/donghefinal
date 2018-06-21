@@ -31,4 +31,5 @@ public interface TeaService {
     void getEstimatedAvgPrice(Double regFactor);
     void getAverage();
     Double getError();
+    void merge();
 }

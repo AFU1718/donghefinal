@@ -418,14 +418,13 @@ public class TeaServiceImpl implements TeaService {
             String yearMonth = teaInterestedPriceMonthCut.getYearMonth();
             ParamByMonth paramByMonth = paramByMonthDAO.getByYearMonth(yearMonth);
             TeaInterested teaInterested = teaInterestedDAO.getByGoodsId(teaInterestedPriceMonthCut.getGoodsId());
-            Double estimatedAvgPrice = 1 + paramByMonth.getIntercept() + paramByMonth.getPolicyParam() * teaInterested.getByOrder(1) + paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(2) +
-                    paramByMonth.getHotMoneyParam() * teaInterested.getByOrder(3) + paramByMonth.getReputationParam() * teaInterested.getByOrder(4) + paramByMonth.getYearParam() * teaInterested.getByOrder(5) +
-                    paramByMonth.getBrandParam() * teaInterested.getByOrder(6) + paramByMonth.getAreaParam() * teaInterested.getByOrder(7) + paramByMonth.getScarcityParam() * teaInterested.getByOrder(8) +
-                    paramByMonth.getSeasoningParam() * teaInterested.getByOrder(9) + paramByMonth.getFlavorParam() * teaInterested.getByOrder(10) +
-                    +regFactor * (Math.pow(paramByMonth.getIntercept(), 2) + Math.pow(paramByMonth.getPolicyParam(), 2) + Math.pow(paramByMonth.getHotMoneyParam(), 2) +
-                            Math.pow(paramByMonth.getHypeParam(), 2) + Math.pow(paramByMonth.getReputationParam(), 2) + Math.pow(paramByMonth.getYearParam(), 2) +
-                            Math.pow(paramByMonth.getBrandParam(), 2) + Math.pow(paramByMonth.getAreaParam(), 2) + Math.pow(paramByMonth.getScarcityParam(), 2) +
-                            Math.pow(paramByMonth.getScarcityParam(), 2) + Math.pow(paramByMonth.getFlavorParam(), 2));
+            Double estimatedAvgPrice = 1 + paramByMonth.getIntercept() + paramByMonth.getOuterParam() * teaInterested.getByOrder(1) + paramByMonth.getReputationParam() * teaInterested.getByOrder(2) +
+                    paramByMonth.getYearParam() * teaInterested.getByOrder(3) + paramByMonth.getScarcityParam() * teaInterested.getByOrder(4) + paramByMonth.getBrand_areaParam() * teaInterested.getByOrder(5) +
+                    paramByMonth.getSeasoning_flavorParam() * teaInterested.getByOrder(6)  +
+
+                    +regFactor * (Math.pow(paramByMonth.getIntercept(), 2) + Math.pow(paramByMonth.getOuterParam(), 2) + Math.pow(paramByMonth.getReputationParam(), 2) +
+                            Math.pow(paramByMonth.getYearParam(), 2) + Math.pow(paramByMonth.getScarcityParam(), 2) + Math.pow(paramByMonth.getBrand_areaParam(), 2) +
+                            Math.pow(paramByMonth.getSeasoning_flavorParam(), 2) );
             teaInterestedPriceMonthCutDAO.updateEstimatedAvgPrice(teaInterestedPriceMonthCut.getGoodsId(), yearMonth, estimatedAvgPrice);
 
         }
@@ -440,5 +439,8 @@ public class TeaServiceImpl implements TeaService {
 
     public Double getError() {
         return teaInterestedPriceMonthCutDAO.getError();
+    }
+    public void merge(){
+        teaInterestedDAO.merge();
     }
 }

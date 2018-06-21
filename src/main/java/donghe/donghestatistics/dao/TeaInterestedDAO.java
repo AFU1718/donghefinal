@@ -43,4 +43,10 @@ public class TeaInterestedDAO extends BaseDAO<TeaInterested> {
             return (TeaInterested)query.list().get(0);
         }
     }
+    public void merge(){
+        String hql = "update TeaInterested t set t.brand_area=(t.brand+t.area)/2,t.seasoning_flavor= (t.seasoning+t.flavor)/2";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.executeUpdate();
+    }
+
 }

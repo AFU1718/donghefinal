@@ -111,4 +111,11 @@ public class TeaController {
         return Result.success(err);
     }
 
+    @RequestMapping(value = "/merge", method = RequestMethod.GET)
+    public Result merge() {
+        teaService.merge();
+
+        return Result.success();
+    }
+
 }

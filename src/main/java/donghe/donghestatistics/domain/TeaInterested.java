@@ -16,6 +16,10 @@ public class TeaInterested extends BaseEntity<TeaInterested> {
     private Double scarcity;
     private Double seasoning;
     private Double flavor;
+    private Double brand_area;
+    private Double seasoning_flavor;
+
+
 
 
 
@@ -92,40 +96,42 @@ public class TeaInterested extends BaseEntity<TeaInterested> {
         this.flavor = flavor;
     }
 
+    public Double getBrand_area() {
+        return brand_area;
+    }
 
+    public void setBrand_area(Double brand_area) {
+        this.brand_area = brand_area;
+    }
+
+    public Double getSeasoning_flavor() {
+        return seasoning_flavor;
+    }
+
+    public void setSeasoning_flavor(Double seasoning_flavor) {
+        this.seasoning_flavor = seasoning_flavor;
+    }
 
     public Double getByOrder(int order) {
         if (order==1){
-            return 0.20;
+            return 0.60;
         }
         if (order==2){
-            return 0.25;
-        }
-        if (order==3){
-            return 0.15;
-        }
-        if (order==4){
             return this.getReputation()*0.10;
         }
-        if (order==5){
+        if (order==3){
             return this.getYear()*0.03;
         }
-        if (order==6){
-            return this.getBrand()*0.07;
-        }
-        if (order==7){
-            return this.getArea()*0.10;
-        }
-        if (order==8){
+        if (order==4){
             return this.getScarcity()*0.04;
         }
-        if (order==9){
-            return this.getSeasoning()*0.03;
+        if (order==5){
+            return this.getBrand_area()*0.17;
         }
-        if (order==10){
-            return this.getFlavor()*0.03;
+        if (order==6){
+            return this.getSeasoning_flavor()*0.06;
         }
-        if (order==11){
+        if (order==7){
             return 1.0;
         }
         return 1.0;

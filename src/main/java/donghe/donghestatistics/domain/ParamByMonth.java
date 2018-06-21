@@ -10,16 +10,16 @@ import javax.persistence.Table;
 public class ParamByMonth extends BaseEntity<ParamByMonth> {
 
     private String yearMonth;
-    private Double policyParam;
-    private Double hotMoneyParam;
-    private Double hypeParam;
+    private Double outerParam;
     private Double reputationParam;
     private Double yearParam;
-    private Double brandParam;
-    private Double areaParam;
+
     private Double scarcityParam;
-    private Double seasoningParam;
-    private Double flavorParam;
+
+    private Double brand_areaParam;
+
+    private Double seasoning_flavorParam;
+
     private Double intercept;
 
     public String getYearMonth() {
@@ -30,28 +30,12 @@ public class ParamByMonth extends BaseEntity<ParamByMonth> {
         this.yearMonth = yearMonth;
     }
 
-    public Double getPolicyParam() {
-        return policyParam;
+    public Double getOuterParam() {
+        return outerParam;
     }
 
-    public void setPolicyParam(Double policyParam) {
-        this.policyParam = policyParam;
-    }
-
-    public Double getHotMoneyParam() {
-        return hotMoneyParam;
-    }
-
-    public void setHotMoneyParam(Double hotMoneyParam) {
-        this.hotMoneyParam = hotMoneyParam;
-    }
-
-    public Double getHypeParam() {
-        return hypeParam;
-    }
-
-    public void setHypeParam(Double hypeParam) {
-        this.hypeParam = hypeParam;
+    public void setOuterParam(Double outerParam) {
+        this.outerParam = outerParam;
     }
 
     public Double getReputationParam() {
@@ -70,22 +54,6 @@ public class ParamByMonth extends BaseEntity<ParamByMonth> {
         this.yearParam = yearParam;
     }
 
-    public Double getBrandParam() {
-        return brandParam;
-    }
-
-    public void setBrandParam(Double brandParam) {
-        this.brandParam = brandParam;
-    }
-
-    public Double getAreaParam() {
-        return areaParam;
-    }
-
-    public void setAreaParam(Double areaParam) {
-        this.areaParam = areaParam;
-    }
-
     public Double getScarcityParam() {
         return scarcityParam;
     }
@@ -94,20 +62,20 @@ public class ParamByMonth extends BaseEntity<ParamByMonth> {
         this.scarcityParam = scarcityParam;
     }
 
-    public Double getSeasoningParam() {
-        return seasoningParam;
+    public Double getBrand_areaParam() {
+        return brand_areaParam;
     }
 
-    public void setSeasoningParam(Double seasoningParam) {
-        this.seasoningParam = seasoningParam;
+    public void setBrand_areaParam(Double brand_areaParam) {
+        this.brand_areaParam = brand_areaParam;
     }
 
-    public Double getFlavorParam() {
-        return flavorParam;
+    public Double getSeasoning_flavorParam() {
+        return seasoning_flavorParam;
     }
 
-    public void setFlavorParam(Double flavorParam) {
-        this.flavorParam = flavorParam;
+    public void setSeasoning_flavorParam(Double seasoning_flavorParam) {
+        this.seasoning_flavorParam = seasoning_flavorParam;
     }
 
     public Double getIntercept() {
