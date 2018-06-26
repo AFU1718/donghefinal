@@ -26,4 +26,6 @@ public class Tea extends BaseEntity<Tea> {
     public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
     }
+
+
 }

@@ -1,5 +1,6 @@
 package donghe.donghestatistics.controller;
 
+import donghe.donghestatistics.service.ExcelService;
 import donghe.donghestatistics.service.TeaService;
 import donghe.donghestatistics.service.TrainingService;
 import donghe.donghestatistics.service.TrainingServiceImpl;
@@ -21,6 +22,8 @@ public class TeaController {
     private TeaService teaService;
     @Autowired
     private TrainingService trainingService;
+    @Autowired
+    private ExcelService excelService;
 
     @RequestMapping(method = RequestMethod.GET)
     public Result getGoodsId() throws Exception {
@@ -117,5 +120,14 @@ public class TeaController {
 
         return Result.success();
     }
-
+    @RequestMapping(value = "/fillIn", method = RequestMethod.GET)
+    public Result fillIn(@RequestParam Integer goodsId)throws Exception {
+        excelService.createExcel(teaService.fillIn(teaService.getTeaPriceListByGoodsId(goodsId)));
+        return Result.success();
+    }
+    @RequestMapping(value = "/teaDetail", method = RequestMethod.GET)
+    public Result getTeaDetail() throws Exception{
+        teaService.getTeaDetail();
+        return Result.success();
+    }
 }

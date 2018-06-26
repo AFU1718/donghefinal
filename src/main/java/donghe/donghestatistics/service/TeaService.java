@@ -1,6 +1,7 @@
 package donghe.donghestatistics.service;
 
 import donghe.donghestatistics.domain.TeaInterested;
+import donghe.donghestatistics.domain.TeaPrice;
 import donghe.donghestatistics.domain.TeaPriceMonth;
 
 import java.io.IOException;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface TeaService {
+    void getTeaDetail() throws Exception;
+    void getTeaDetailByGoodsId(Integer goodsId) throws Exception;
     void getGoodsId() throws IOException;
 
     void getGoodsPriceByGoodsId(int goodsId, String beginDay, String endDay) throws Exception;
@@ -32,4 +35,6 @@ public interface TeaService {
     void getAverage();
     Double getError();
     void merge();
+    List<TeaPrice> fillIn(List<TeaPrice> teaPriceList) throws Exception;
+    List<TeaPrice> getTeaPriceListByGoodsId(Integer goodsId);
 }

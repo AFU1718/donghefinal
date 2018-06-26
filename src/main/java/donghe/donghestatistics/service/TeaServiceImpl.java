@@ -31,12 +31,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
+
 
 @Service
 @Transactional
@@ -56,6 +58,171 @@ public class TeaServiceImpl implements TeaService {
     private ParamByMonthDAO paramByMonthDAO;
     @Autowired
     private PriceMonthAvgDAO priceMonthAvgDAO;
+    @Autowired
+    private TeaDetailDAO teaDetailDAO;
+    public void getTeaDetail() throws Exception{
+        List<Integer> goodsIdList = getGoodsIdList();
+        for (Integer i : goodsIdList) {
+            getTeaDetailByGoodsId(i);
+
+        }
+    }
+
+    public void getTeaDetailByGoodsId(Integer goodsId) throws Exception {
+        String url = "http://www.donghetea.com/goods.php";
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        InputStream is = null;
+
+        HttpPost httpPost = new HttpPost(url);
+
+        List<NameValuePair> params = new ArrayList();
+
+        params.add(new BasicNameValuePair("id", Integer.toString(goodsId)));
+        httpPost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
+         String name =null;
+         String year=null;
+         String batch=null;
+         String productionTechnology=null;
+         String specification=null;
+         String netContent=null;
+         String referencePricePerKg=null;
+         String referencePrice=null;
+
+        try {
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null) {
+                is = entity.getContent();
+                //转换为字节输入流
+                BufferedReader br = new BufferedReader(new InputStreamReader(is, Consts.UTF_8));
+                String body = null;
+                String content = "";
+                String NEW_LINE = System.getProperty("line.separator");
+                while ((body = br.readLine()) != null) {
+                    content = content + body + NEW_LINE;
+                }
+
+//                System.out.println(content);
+
+                Document document = Jsoup.parse(content);
+                Elements elementsGoodsDetails = document.getElementsByClass("buyli clearfix");
+                for (Element e1 : elementsGoodsDetails) {
+                    Elements details1 = e1.getElementsByClass("pro");
+                    for (Element e2 : details1) {
+                        if (e2.toString().contains("年份")){
+                            String[] s1 = e2.toString().split("<span>");
+                            String[] s2 = s1[1].split("</span>");
+                            year = s2[0];
+                            System.out.println(year);
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+                        }else if(e2.toString().contains("批次")){
+                            String[] s1 = e2.toString().split("<span>");
+                            String[] s2 = s1[1].split("</span>");
+                            batch = s2[0];
+                            System.out.println(batch);
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+                        }else if(e2.toString().contains("生产工艺")){
+                            String[] s1 = e2.toString().split("<span>");
+                            String[] s2 = s1[1].split("</span>");
+                            productionTechnology = s2[0];
+                            System.out.println(productionTechnology);
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+                        }else if(e2.toString().contains("规格")){
+                            String[] s1 = e2.toString().split("<span>");
+                            String[] s2 = s1[1].split("</span>");
+                            specification = s2[0];
+                            System.out.println(specification);
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+                        }
+
+
+                    }
+
+                    Elements details2 = e1.getElementsByClass("pro2");
+                    for (Element e2 : details2) {
+                        if(e2.toString().contains("净含量")){
+                            String s = e2.toString().replace(" ", "");
+                            String[] s1 = s.split("净含量：");
+                            String[] s2 = s1[1].split("</li>");
+                            netContent = s2[0];
+                            System.out.println(netContent);
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+                        }else if(e2.toString().contains("公斤参考价")){
+                            String[] s1 = e2.toString().split("class=\"shop_s\">");
+                            String[] s2 = s1[1].split("</font>");
+                            referencePricePerKg = s2[0];
+                            System.out.println(referencePricePerKg);
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                        }else if(e2.toString().contains("参考价")){
+                            String s = e2.toString().replace(" ", "");
+                            String[] s1 = s.split("class=\"shop_sb\">");
+                            String[] s2 = s1[1].split("</font>");
+
+                            String referencePrice1 = s2[0];
+
+                            String[] s3=s2[1].split("<em>");
+                            String[] s4 = s3[1].split("</em>");
+                            String referencePrice2=s4[0];
+                            referencePrice=referencePrice1+referencePrice2;
+                            System.out.println(referencePrice);
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                        }
+                    }
+
+                }
+                TeaDetail teaDetail=new TeaDetail();
+                teaDetail.setName(teaDAO.getNameByGoodsId(goodsId));
+                teaDetail.setGoodsId(goodsId);
+                teaDetail.setYear(year);
+                teaDetail.setBatch(batch);
+                teaDetail.setProductionTechnology(productionTechnology);
+                teaDetail.setSpecification(specification);
+                teaDetail.setNetContent(netContent);
+                teaDetail.setReferencePricePerKg(referencePricePerKg);
+                teaDetail.setReferencePrice(referencePrice);
+                teaDetailDAO.create(teaDetail);
+
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            //关闭输入流，释放资源
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+    }
 
     public void clearZeroPrice() {
         teaPriceDAO.clearZeroPrice();
@@ -150,7 +317,7 @@ public class TeaServiceImpl implements TeaService {
                             teaPrice.setName(teaDAO.getNameByGoodsId(goodsId));
                             String date = (String) (JSON.parseArray(obj.toString()).get(0));
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                            Date dateUtil = sdf.parse(date);
+                            java.util.Date dateUtil = sdf.parse(date);
                             java.sql.Date dateSql = new java.sql.Date(dateUtil.getTime());
                             teaPrice.setDate(dateSql);
                             final Object o = JSON.parseArray(obj.toString()).get(1);
@@ -255,6 +422,7 @@ public class TeaServiceImpl implements TeaService {
                 Document document = Jsoup.parse(content);
                 Elements elementsGoodsItem = document.getElementsByClass("goodsItem");
                 for (Element element : elementsGoodsItem) {
+
                     Elements elementsGoodsItem_title = element.getElementsByClass("goodsItem_title");
                     for (Element element1 : elementsGoodsItem_title) {
                         Elements links = element1.getElementsByTag("a");
@@ -420,11 +588,11 @@ public class TeaServiceImpl implements TeaService {
             TeaInterested teaInterested = teaInterestedDAO.getByGoodsId(teaInterestedPriceMonthCut.getGoodsId());
             Double estimatedAvgPrice = 1 + paramByMonth.getIntercept() + paramByMonth.getOuterParam() * teaInterested.getByOrder(1) + paramByMonth.getReputationParam() * teaInterested.getByOrder(2) +
                     paramByMonth.getYearParam() * teaInterested.getByOrder(3) + paramByMonth.getScarcityParam() * teaInterested.getByOrder(4) + paramByMonth.getBrand_areaParam() * teaInterested.getByOrder(5) +
-                    paramByMonth.getSeasoning_flavorParam() * teaInterested.getByOrder(6)  +
+                    paramByMonth.getSeasoning_flavorParam() * teaInterested.getByOrder(6) +
 
                     +regFactor * (Math.pow(paramByMonth.getIntercept(), 2) + Math.pow(paramByMonth.getOuterParam(), 2) + Math.pow(paramByMonth.getReputationParam(), 2) +
                             Math.pow(paramByMonth.getYearParam(), 2) + Math.pow(paramByMonth.getScarcityParam(), 2) + Math.pow(paramByMonth.getBrand_areaParam(), 2) +
-                            Math.pow(paramByMonth.getSeasoning_flavorParam(), 2) );
+                            Math.pow(paramByMonth.getSeasoning_flavorParam(), 2));
             teaInterestedPriceMonthCutDAO.updateEstimatedAvgPrice(teaInterestedPriceMonthCut.getGoodsId(), yearMonth, estimatedAvgPrice);
 
         }
@@ -440,7 +608,54 @@ public class TeaServiceImpl implements TeaService {
     public Double getError() {
         return teaInterestedPriceMonthCutDAO.getError();
     }
-    public void merge(){
+
+    public void merge() {
         teaInterestedDAO.merge();
+    }
+
+    public List<TeaPrice> fillIn(List<TeaPrice> teaPriceList) throws Exception {
+        List<TeaPrice> res = new ArrayList<>();
+        TeaPrice first = teaPriceList.get(0);
+        Date firstDate = first.getDate();
+        Integer goodsId = first.getGoodsId();
+        String name = first.getName();
+
+        TeaPrice last = teaPriceList.get(teaPriceList.size() - 1);
+        Date lastDate = last.getDate();
+        res.add(first);
+        System.out.println(nextDate(first.getDate()));
+        while (!(nextDate(first.getDate())).after(lastDate)) {
+            if (!teaPriceDAO.existOrNotByGoodsIdAndDate(goodsId, nextDate(first.getDate()))) {
+                TeaPrice tmp = new TeaPrice();
+                tmp.setGoodsId(goodsId);
+                tmp.setName(name);
+                tmp.setPrice(first.getPrice());
+                tmp.setDate(nextDate(first.getDate()));
+                res.add(tmp);
+                first = tmp;
+            } else {
+                res.add(teaPriceDAO.findByGoodsIdAndDate(goodsId, nextDate(first.getDate())));
+                first = teaPriceDAO.findByGoodsIdAndDate(goodsId, nextDate(first.getDate()));
+
+            }
+
+        }
+
+        return res;
+    }
+
+    public List<TeaPrice> getTeaPriceListByGoodsId(Integer goodsId) {
+        return teaPriceDAO.getTeaPriceListByGoodsId(goodsId);
+    }
+
+    public Date nextDate(Date before) throws Exception {
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        System.out.println(before);
+        c.setTime(before);
+        c.add(Calendar.DAY_OF_MONTH, 1);// 今天+1天
+        Date after = new Date(c.getTime().getTime());
+        String afterString = f.format(after);
+        return new Date((f.parse(afterString)).getTime());
     }
 }

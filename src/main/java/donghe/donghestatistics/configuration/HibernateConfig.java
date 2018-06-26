@@ -28,6 +28,7 @@ public class HibernateConfig {
             ParamByMonth.class,
             TeaInterestedPriceMonthCut.class,
             PriceMonthAvg.class,
+            TeaDetail.class,
     };
 
     @Autowired

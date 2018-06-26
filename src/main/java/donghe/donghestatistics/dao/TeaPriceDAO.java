@@ -7,6 +7,7 @@ import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +37,42 @@ public class TeaPriceDAO extends BaseDAO<TeaPrice> {
         org.hibernate.Query query = sessionFactory.getCurrentSession().createQuery(hql);
         query.setDouble(0, 0.0);
         query.executeUpdate();
+    }
+
+   public Boolean existOrNotByGoodsIdAndDate(Integer goodsId,Date date){
+       String hql = "from TeaPrice t where t.goodsId=? and t.date=?";
+       Query query = sessionFactory.getCurrentSession().createQuery(hql);
+       query.setInteger(0, goodsId);
+       query.setDate(1,date);
+       query.setFirstResult(0);
+       query.setMaxResults(1);
+       if (query.list() == null || query.list().size() == 0) {
+           return false;
+       } else {
+           return true;
+       }
+
+    }
+    public TeaPrice findByGoodsIdAndDate(Integer goodsId,Date date){
+        String hql = "from TeaPrice t where t.goodsId=? and t.date=?";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setInteger(0,goodsId);
+        query.setDate(1,date);
+        if (query.list() == null || query.list().size() == 0) {
+            return null;
+        } else {
+            return (TeaPrice)query.list().get(0);
+        }
+
+    }
+    public List<TeaPrice> getTeaPriceListByGoodsId(Integer goodsId){
+        String hql = "from TeaPrice t where t.goodsId=? order by t.date";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setInteger(0,goodsId);
+        if (query.list() == null || query.list().size() == 0) {
+            return null;
+        } else {
+            return query.list();
+        }
     }
 }
