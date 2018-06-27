@@ -60,7 +60,8 @@ public class TeaServiceImpl implements TeaService {
     private PriceMonthAvgDAO priceMonthAvgDAO;
     @Autowired
     private TeaDetailDAO teaDetailDAO;
-    public void getTeaDetail() throws Exception{
+
+    public void getTeaDetail() throws Exception {
         List<Integer> goodsIdList = getGoodsIdList();
         for (Integer i : goodsIdList) {
             getTeaDetailByGoodsId(i);
@@ -80,15 +81,18 @@ public class TeaServiceImpl implements TeaService {
 
         params.add(new BasicNameValuePair("id", Integer.toString(goodsId)));
         httpPost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
-         String name =null;
-         String year=null;
-         String batch=null;
-         String productionTechnology=null;
-         String specification=null;
-         String netContent=null;
-         String referencePricePerKg=null;
-         String referencePrice=null;
-
+        String name = null;
+        String year = null;
+        String batch = null;
+        String productionTechnology = null;
+        String specification = null;
+        String netContent = null;
+        String referencePricePerKg = null;
+        String referencePrice = null;
+        Integer quality = null;
+        Integer costPerformance = null;
+        Integer collectionValue = null;
+        Integer score = null;
         try {
             response = httpClient.execute(httpPost);
             HttpEntity entity = response.getEntity();
@@ -107,32 +111,32 @@ public class TeaServiceImpl implements TeaService {
 //                System.out.println(content);
 
                 Document document = Jsoup.parse(content);
-                Elements elementsGoodsDetails = document.getElementsByClass("buyli clearfix");
-                for (Element e1 : elementsGoodsDetails) {
+                Elements elementsGoodsDetails1 = document.getElementsByClass("buyli clearfix");
+                for (Element e1 : elementsGoodsDetails1) {
                     Elements details1 = e1.getElementsByClass("pro");
                     for (Element e2 : details1) {
-                        if (e2.toString().contains("年份")){
+                        if (e2.toString().contains("年份")) {
                             String[] s1 = e2.toString().split("<span>");
                             String[] s2 = s1[1].split("</span>");
                             year = s2[0];
                             System.out.println(year);
                             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-                        }else if(e2.toString().contains("批次")){
+                        } else if (e2.toString().contains("批次")) {
                             String[] s1 = e2.toString().split("<span>");
                             String[] s2 = s1[1].split("</span>");
                             batch = s2[0];
                             System.out.println(batch);
                             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-                        }else if(e2.toString().contains("生产工艺")){
+                        } else if (e2.toString().contains("生产工艺")) {
                             String[] s1 = e2.toString().split("<span>");
                             String[] s2 = s1[1].split("</span>");
                             productionTechnology = s2[0];
                             System.out.println(productionTechnology);
                             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-                        }else if(e2.toString().contains("规格")){
+                        } else if (e2.toString().contains("规格")) {
                             String[] s1 = e2.toString().split("<span>");
                             String[] s2 = s1[1].split("</span>");
                             specification = s2[0];
@@ -146,7 +150,7 @@ public class TeaServiceImpl implements TeaService {
 
                     Elements details2 = e1.getElementsByClass("pro2");
                     for (Element e2 : details2) {
-                        if(e2.toString().contains("净含量")){
+                        if (e2.toString().contains("净含量")) {
                             String s = e2.toString().replace(" ", "");
                             String[] s1 = s.split("净含量：");
                             String[] s2 = s1[1].split("</li>");
@@ -154,29 +158,83 @@ public class TeaServiceImpl implements TeaService {
                             System.out.println(netContent);
                             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-                        }else if(e2.toString().contains("公斤参考价")){
+                        } else if (e2.toString().contains("公斤参考价")) {
                             String[] s1 = e2.toString().split("class=\"shop_s\">");
                             String[] s2 = s1[1].split("</font>");
                             referencePricePerKg = s2[0];
                             System.out.println(referencePricePerKg);
                             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                        }else if(e2.toString().contains("参考价")){
+                        } else if (e2.toString().contains("参考价")) {
                             String s = e2.toString().replace(" ", "");
                             String[] s1 = s.split("class=\"shop_sb\">");
                             String[] s2 = s1[1].split("</font>");
 
                             String referencePrice1 = s2[0];
 
-                            String[] s3=s2[1].split("<em>");
+                            String[] s3 = s2[1].split("<em>");
                             String[] s4 = s3[1].split("</em>");
-                            String referencePrice2=s4[0];
-                            referencePrice=referencePrice1+referencePrice2;
+                            String referencePrice2 = s4[0];
+                            referencePrice = referencePrice1 + referencePrice2;
                             System.out.println(referencePrice);
                             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         }
                     }
 
                 }
+                Elements elementsGoodsDetails2 = document.getElementsByClass("goods_pj");
+                for (Element e1 : elementsGoodsDetails2) {
+                    Elements details1 = e1.getElementsByClass("goods_pj_left");
+                    for (Element e2 : details1) {
+                        Elements goods_pj_list = e2.getElementsByClass("goods_pj_list");
+                        for (Element e3 : goods_pj_list) {
+                            if (e3.toString().contains("品")) {
+                                String s = e3.toString().replace(" ", "");
+                                String[] s1 = s.split("class=\"goods_pj_txt\">");
+                                String[] s2 = s1[1].split("</div>");
+                                String quality1 = s2[0].trim();
+                                quality = new Integer(quality1.split("分")[0]);
+                                System.out.println(quality);
+                                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+                            } else if (e3.toString().contains("性")) {
+                                String s = e3.toString().replace(" ", "");
+                                String[] s1 = s.split("class=\"goods_pj_txt\">");
+                                String[] s2 = s1[1].split("</div>");
+                                String costPerformance1 = s2[0].trim();
+                                costPerformance = new Integer(costPerformance1.split("分")[0]);
+                                System.out.println(costPerformance);
+                                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                            } else if (e3.toString().contains("收")) {
+                                String s = e3.toString().replace(" ", "");
+                                String[] s1 = s.split("class=\"goods_pj_txt\">");
+                                String[] s2 = s1[1].split("</div>");
+                                String collectionValue1 = s2[0].trim();
+                                costPerformance = new Integer(collectionValue1.split("分")[0]);
+                                System.out.println(costPerformance);
+                                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                            }
+
+                        }
+
+                    }
+
+
+                    Elements details2 = e1.getElementsByClass("goods_pj_right");
+                    for (Element e2 : details2) {
+                        Elements wp_txt = e2.getElementsByClass("wp_num");
+                        for (Element e3 : wp_txt) {
+                            String s = e3.toString().replace(" ", "");
+                            String[] s1 = s.split("class=\"wp_num\">");
+                            String[] s2 = s1[1].split("</div>");
+                            score = new Integer(s2[0].trim());
+                            System.out.println(score);
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                        }
+                    }
+
+                }
+
+
                 TeaDetail teaDetail=new TeaDetail();
                 teaDetail.setName(teaDAO.getNameByGoodsId(goodsId));
                 teaDetail.setGoodsId(goodsId);
@@ -187,6 +245,10 @@ public class TeaServiceImpl implements TeaService {
                 teaDetail.setNetContent(netContent);
                 teaDetail.setReferencePricePerKg(referencePricePerKg);
                 teaDetail.setReferencePrice(referencePrice);
+                teaDetail.setQuality(quality);
+                teaDetail.setCostPerformance(costPerformance);
+                teaDetail.setCollectionValue(collectionValue);
+                teaDetail.setScore(score);
                 teaDetailDAO.create(teaDetail);
 
             }

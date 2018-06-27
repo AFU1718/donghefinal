@@ -125,6 +125,11 @@ public class TeaController {
         excelService.createExcel(teaService.fillIn(teaService.getTeaPriceListByGoodsId(goodsId)));
         return Result.success();
     }
+    @RequestMapping(value = "/teaDetail1", method = RequestMethod.GET)
+    public Result getTeaDetail1(@RequestParam Integer goodsId) throws Exception{
+        teaService.getTeaDetailByGoodsId(goodsId);
+        return Result.success();
+    }
     @RequestMapping(value = "/teaDetail", method = RequestMethod.GET)
     public Result getTeaDetail() throws Exception{
         teaService.getTeaDetail();
