@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import donghe.donghestatistics.dao.*;
 import donghe.donghestatistics.domain.*;
+import donghe.donghestatistics.vo.TeaDetailVO;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -719,5 +720,27 @@ public class TeaServiceImpl implements TeaService {
         Date after = new Date(c.getTime().getTime());
         String afterString = f.format(after);
         return new Date((f.parse(afterString)).getTime());
+    }
+
+    public TeaDetailVO getTeaInfo(String name, String beginAt, String endAt) throws Exception{
+        TeaDetailVO teaDetailVO=new TeaDetailVO();
+        List<TeaPrice> teaPriceList=teaPriceDAO.findByNameAndDateInterval(name,beginAt,endAt);
+        TeaDetail teaDetail=teaDetailDAO.findByName(name);
+
+        teaDetailVO.setName(teaDetail.getName());
+        teaDetailVO.setGoodsId(teaDetail.getGoodsId());
+        teaDetailVO.setYear(teaDetail.getYear());
+        teaDetailVO.setBatch(teaDetail.getBatch());
+        teaDetailVO.setProductionTechnology(teaDetail.getProductionTechnology());
+        teaDetailVO.setSpecification(teaDetail.getSpecification());
+        teaDetailVO.setNetContent(teaDetail.getNetContent());
+        teaDetailVO.setReferencePricePerKg(teaDetail.getReferencePricePerKg());
+        teaDetailVO.setReferencePrice(teaDetail.getReferencePrice());
+        teaDetailVO.setQuality(teaDetail.getQuality());
+        teaDetailVO.setCollectionValue(teaDetail.getCollectionValue());
+        teaDetailVO.setScore(teaDetail.getScore());
+        teaDetailVO.setTeaPriceList(teaPriceList);
+        return teaDetailVO;
+
     }
 }

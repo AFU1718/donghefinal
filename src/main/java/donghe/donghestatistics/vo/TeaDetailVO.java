@@ -16,10 +16,10 @@ public class TeaDetailVO {
     private String netContent;
     private String referencePricePerKg;
     private String referencePrice;
-    private String quality;
-    private String costPerformance;
-    private String collectionValue;
-    private String score;
+    private Integer quality;
+    private Integer costPerformance;
+    private Integer collectionValue;
+    private Integer score;
     private List<TeaPrice> teaPriceList;
 
     public String getName() {
@@ -94,35 +94,35 @@ public class TeaDetailVO {
         this.referencePrice = referencePrice;
     }
 
-    public String getQuality() {
+    public Integer getQuality() {
         return quality;
     }
 
-    public void setQuality(String quality) {
+    public void setQuality(Integer quality) {
         this.quality = quality;
     }
 
-    public String getCostPerformance() {
+    public Integer getCostPerformance() {
         return costPerformance;
     }
 
-    public void setCostPerformance(String costPerformance) {
+    public void setCostPerformance(Integer costPerformance) {
         this.costPerformance = costPerformance;
     }
 
-    public String getCollectionValue() {
+    public Integer getCollectionValue() {
         return collectionValue;
     }
 
-    public void setCollectionValue(String collectionValue) {
+    public void setCollectionValue(Integer collectionValue) {
         this.collectionValue = collectionValue;
     }
 
-    public String getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(String score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 

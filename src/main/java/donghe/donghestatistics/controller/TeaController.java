@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -134,5 +135,9 @@ public class TeaController {
     public Result getTeaDetail() throws Exception{
         teaService.getTeaDetail();
         return Result.success();
+    }
+    @RequestMapping(value = "/teaInfo", method = RequestMethod.GET)
+    public Result getTeaInfo(@RequestParam String name,@RequestParam String beginAt,@RequestParam String endAt) throws Exception{
+        return Result.success(teaService.getTeaInfo(name,beginAt,endAt));
     }
 }
